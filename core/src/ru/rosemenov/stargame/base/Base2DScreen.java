@@ -15,11 +15,11 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     public Base2DScreen(Game game) {
         this.game = game;
-        Gdx.input.setInputProcessor(this);
     }
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(this);
         System.out.println("show");
     }
 
