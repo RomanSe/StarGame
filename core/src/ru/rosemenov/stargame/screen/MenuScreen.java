@@ -3,36 +3,36 @@ package ru.rosemenov.stargame.screen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.rosemenov.stargame.base.Base2DScreen;
+import ru.rosemenov.stargame.base.DrawableRect;
+import ru.rosemenov.stargame.math.Rect;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Экран меню
  */
 public class MenuScreen extends Base2DScreen {
-    private SpriteBatch batch;
-    private Texture background;
-    private Texture ship;
-    private Vector2 velocity;
-    private float speed = 0.5f;
 
-    private Vector2 pos;
-    int width;
-    int height;
-    int background_width;
-    int background_height;
+    DrawableRect ship;
+    DrawableRect backgroung;
+    List<DrawableRect> drawableRects = new ArrayList<DrawableRect>();
 
 
     public MenuScreen(Game game) {
         super(game);
-        background = new Texture("space.jpg");
-        ship = new Texture("starship.png");
-        pos = new Vector2(ship.getWidth()/2, ship.getHeight()/2);
-        velocity = new Vector2(0.0f, speed);
-        batch = new SpriteBatch();
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        ship = new DrawableRect( batch, "starship.png", 0f, 0f, 5f, 5f);
+        backgroung = new DrawableRect(batch, "space.jpg", 0f, 0f, WORLD_WIDTH/2, WORLD_HEIGHT/2);
+        drawableRects.add(backgroung); //похоже, порядок отрисовки важен
+        drawableRects.add(ship);
     }
 
     @Override
@@ -41,36 +41,34 @@ public class MenuScreen extends Base2DScreen {
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(background, 0, 0, background_width, background_height);
-        pos.add(velocity);
-        batch.draw(ship, pos.x - ship.getWidth()/2, pos.y - ship.getHeight()/2);
+        for (DrawableRect obj: drawableRects) {
+            obj.draw();
+        }
+        //backgroung.draw(); //WORLD_WIDTH, WORLD_HEIGHT
         batch.end();
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        background.dispose();
+        ship.dispose();
         super.dispose();
     }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        super.touchUp(screenX, screenY, pointer, button);
-        velocity = getTouchVector(screenX, screenY).sub(pos).setLength(speed);
-        return true;
+    public void touchDown(Vector2 touch, int pointer) {
+        super.touchDown(touch, pointer);
     }
 
     @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-        this.width = width;
-        this.height = height;
-        background_width = Math.max(width, background.getWidth());
-        background_height = Math.max(height, background.getHeight());
+    public void touchUp(Vector2 touch, int pointer) {
+        super.touchUp(touch, pointer);
+        ship.setPos(this.touch);
     }
 
-    private Vector2 getTouchVector(int x, int y) {
-        return new Vector2(x, height - y);
+    @Override
+    public void resize(Rect worldBounds) {
+        backgroung.set(worldBounds);
     }
+
+
 }

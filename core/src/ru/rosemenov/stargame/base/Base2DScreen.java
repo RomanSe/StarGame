@@ -1,25 +1,50 @@
 package ru.rosemenov.stargame.base;
 
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+
+import ru.rosemenov.stargame.math.MatrixUtils;
+import ru.rosemenov.stargame.math.Rect;
 
 /**
- * Базовый класс
+ * Базовый класс экрана
  */
 
 public class Base2DScreen implements Screen, InputProcessor {
+    protected static final float WORLD_HEIGHT = 42f;
+    protected static float WORLD_WIDTH;
+    protected SpriteBatch batch;
+
     protected Game game;
+    private Rect screenBounds; // границы экрана в пикселях
+    private Rect worldBounds; // границы проекции мировых координат
+    private Rect glBounds; // gl-левские координаты
+
+    protected Matrix4 worldToGl;
+    protected Matrix3 screenToWorld;
+
+    protected Vector2 touch = new Vector2();
 
     public Base2DScreen(Game game) {
         this.game = game;
+        this.screenBounds = new Rect();
+        this.worldBounds = new Rect();
+        this.worldBounds.setHeight(WORLD_HEIGHT);
+        this.glBounds = new Rect(0,0, 1f, 1f);
+        this.worldToGl = new Matrix4();
+        this.screenToWorld = new Matrix3();
+        Gdx.input.setInputProcessor(this);
+        batch = new SpriteBatch();
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this);
         System.out.println("show");
     }
 
@@ -30,7 +55,19 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        System.out.println("resize " + width + " " + height);
+        screenBounds.setSize(width, height);
+        screenBounds.setLeft(0);
+        screenBounds.setBottom(0);
+        WORLD_WIDTH = WORLD_HEIGHT * width / (float) height;
+        worldBounds.setWidth(WORLD_WIDTH);
+        MatrixUtils.calcTransitionMatrix(worldToGl, worldBounds, glBounds);
+        batch.setProjectionMatrix(worldToGl);
+        MatrixUtils.calcInputMatrix(screenToWorld, screenBounds, worldBounds);
+        resize(worldBounds);
+    }
+
+    public void resize(Rect worldBounds) {
+        System.out.println("resize w=" + worldBounds.getWidth() + " h=" + worldBounds.getHeight());
     }
 
     @Override
@@ -52,42 +89,58 @@ public class Base2DScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
         System.out.println("dispose");
+        batch.dispose();
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        System.out.println("keydown " + keycode);
+        System.out.println("keyDown keycode=" + keycode);
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        System.out.println("keyup " + keycode);
+        System.out.println("keyUp keycode=" + keycode);
         return false;
     }
 
     @Override
     public boolean keyTyped(char character) {
-        System.out.println("keyryped " + character);
+        System.out.println("keyTyped character=" + character);
         return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchDown " + screenX + " " + screenY + " " + pointer + " " + button);
+        touch.set(screenX, screenY).mul(screenToWorld); //screenBounds.getHeight() -
+        touchDown(touch, pointer);
         return false;
+    }
+
+    public void touchDown(Vector2 touch, int pointer) {
+        System.out.println("touchDown X=" + touch.x + " Y=" + touch.y);
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchUp " + screenX + " " + screenY + " " + pointer + " " + button);
+        touch.set(screenX, screenY).mul(screenToWorld);  //screenBounds.getHeight() -
+        touchUp(touch, pointer);
         return false;
+    }
+
+    public void touchUp(Vector2 touch, int pointer) {
+        System.out.println("touchUp X=" + touch.x + " Y=" + touch.y);
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        System.out.println("touchDragged " + screenX + " " + screenY + " " + pointer);
+        touch.set(screenX, screenY).mul(screenToWorld); //screenBounds.getHeight() -
+                touchDragged(touch, pointer);
         return false;
+    }
+
+    public void touchDragged(Vector2 touch, int pointer) {
+        System.out.println("touchDragged X=" + touch.x + " Y=" + touch.y);
     }
 
     @Override
@@ -97,7 +150,7 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
-        System.out.println("scrolled " + amount);
+        System.out.println("scrolled amount=" + amount);
         return false;
     }
 }
