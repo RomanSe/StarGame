@@ -17,25 +17,22 @@ import ru.rosemenov.stargame.math.Rect;
  */
 
 public class Base2DScreen implements Screen, InputProcessor {
-    protected static final float WORLD_HEIGHT = 42f;
-    protected static float WORLD_WIDTH;
     protected SpriteBatch batch;
 
     protected Game game;
     private Rect screenBounds; // границы экрана в пикселях
-    private Rect worldBounds; // границы проекции мировых координат
+    private Rect worldBounds; // границы проэкции мировых координат
     private Rect glBounds; // gl-левские координаты
 
     protected Matrix4 worldToGl;
     protected Matrix3 screenToWorld;
 
-    protected Vector2 touch = new Vector2();
+    private Vector2 touch = new Vector2();
 
     public Base2DScreen(Game game) {
         this.game = game;
         this.screenBounds = new Rect();
         this.worldBounds = new Rect();
-        this.worldBounds.setHeight(WORLD_HEIGHT);
         this.glBounds = new Rect(0,0, 1f, 1f);
         this.worldToGl = new Matrix4();
         this.screenToWorld = new Matrix3();
@@ -58,11 +55,13 @@ public class Base2DScreen implements Screen, InputProcessor {
         screenBounds.setSize(width, height);
         screenBounds.setLeft(0);
         screenBounds.setBottom(0);
-        WORLD_WIDTH = WORLD_HEIGHT * width / (float) height;
-        worldBounds.setWidth(WORLD_WIDTH);
+
+        float aspect = width / (float) height;
+        worldBounds.setHeight(1f);
+        worldBounds.setWidth(1f * aspect);
         MatrixUtils.calcTransitionMatrix(worldToGl, worldBounds, glBounds);
         batch.setProjectionMatrix(worldToGl);
-        MatrixUtils.calcInputMatrix(screenToWorld, screenBounds, worldBounds);
+        MatrixUtils.calcTransitionMatrix(screenToWorld, screenBounds, worldBounds);
         resize(worldBounds);
     }
 
@@ -112,7 +111,7 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touch.set(screenX, screenY).mul(screenToWorld); //screenBounds.getHeight() -
+        touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
         touchDown(touch, pointer);
         return false;
     }
@@ -123,7 +122,7 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        touch.set(screenX, screenY).mul(screenToWorld);  //screenBounds.getHeight() -
+        touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
         touchUp(touch, pointer);
         return false;
     }
@@ -134,8 +133,8 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        touch.set(screenX, screenY).mul(screenToWorld); //screenBounds.getHeight() -
-                touchDragged(touch, pointer);
+        touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
+        touchDragged(touch, pointer);
         return false;
     }
 
