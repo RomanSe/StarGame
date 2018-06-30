@@ -1,12 +1,11 @@
 package ru.rosemenov.stargame.game;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Screen;
 
 import ru.rosemenov.stargame.screen.MenuScreen;
 
 /**
- * Основной класс игры
+ * Основной игровой класс
  */
 
 public class Star2DGame extends Game {
