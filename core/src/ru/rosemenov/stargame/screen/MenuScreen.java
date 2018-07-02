@@ -9,11 +9,15 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.rosemenov.stargame.base.Base2DScreen;
 import ru.rosemenov.stargame.base.Sprite;
 import ru.rosemenov.stargame.math.Rect;
 import ru.rosemenov.stargame.math.Rnd;
 import ru.rosemenov.stargame.sprite.Background;
+import ru.rosemenov.stargame.sprite.Button;
 import ru.rosemenov.stargame.sprite.Star;
 
 /**
@@ -23,13 +27,17 @@ import ru.rosemenov.stargame.sprite.Star;
 public class MenuScreen extends Base2DScreen {
 
     private Background background;
+    private Button okButton;
+    private Button exitButton;
     private Texture bg;
-    private Star star;
+    private List<Star> stars;
     private TextureAtlas atlas;
 
 
     public MenuScreen(Game game) {
         super(game);
+        stars = new ArrayList<>();
+        System.out.println("menu");
     }
 
     @Override
@@ -39,7 +47,16 @@ public class MenuScreen extends Base2DScreen {
         background = new Background(new TextureRegion(bg));
         atlas = new TextureAtlas("textures/menuAtlas.tpack");
         TextureRegion starRegion = atlas.findRegion("star");
-        star = new Star(starRegion, Rnd.nextFloat(-0.005f, 0.005f),  Rnd.nextFloat(-0.5f, -0.1f), 0.01f);
+        for (int i = 0; i < 100; i++) {
+            float vx = Rnd.nextFloat(-0.005f, 0.005f);
+            float vy = Rnd.nextFloat(-0.5f, -0.1f);
+            float scale = vy / 0.5f;
+            stars.add(new Star(starRegion, vx,  vy, 0.01f, scale));
+        }
+        TextureRegion btPlay = atlas.findRegion("btPlay");
+        okButton = new Button(btPlay, 0.25f, 0.25f, 0.20f);
+        TextureRegion btExit = atlas.findRegion("btExit");
+        exitButton = new Button(btExit, 0.75f, 0.225f, 0.16f);
     }
 
     @Override
@@ -50,7 +67,11 @@ public class MenuScreen extends Base2DScreen {
     }
 
     public void update(float delta) {
-        star.update(delta);
+        for (Star star: stars) {
+            star.update(delta);
+        }
+        okButton.update(delta);
+        exitButton.update(delta);
     }
 
     public void draw() {
@@ -58,7 +79,11 @@ public class MenuScreen extends Base2DScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
-        star.draw(batch);
+        for (Star star: stars) {
+            star.draw(batch);
+        }
+        okButton.draw(batch);
+        exitButton.draw(batch);
         batch.end();
     }
 
@@ -72,17 +97,26 @@ public class MenuScreen extends Base2DScreen {
     @Override
     public void touchDown(Vector2 touch, int pointer) {
         super.touchDown(touch, pointer);
+        okButton.touchDown(touch, pointer);
+        exitButton.touchDown(touch, pointer);
     }
 
     @Override
     public void touchUp(Vector2 touch, int pointer) {
         super.touchUp(touch, pointer);
+        okButton.touchUp(touch, pointer);
+        exitButton.touchUp(touch, pointer);
     }
 
     @Override
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         background.resize(worldBounds);
-        star.resize(worldBounds);
+        exitButton.resize(worldBounds);
+        okButton.resize(worldBounds);
+        for (Star star: stars) {
+            star.resize(worldBounds);
+        }
+
     }
 }

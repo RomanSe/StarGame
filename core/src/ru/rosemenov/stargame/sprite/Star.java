@@ -1,5 +1,6 @@
 package ru.rosemenov.stargame.sprite;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -17,10 +18,11 @@ public class Star extends Sprite {
     private Rect worldBounds;
 
 
-    public Star(TextureRegion region, float vx, float vy, float height) {
+    public Star(TextureRegion region, float vx, float vy, float height, float scale) {
         super(region);
         v.set(vx, vy);
         setHeightProportion(height);
+        this.scale = scale;
     }
 
     @Override
