@@ -59,6 +59,8 @@ public abstract class Sprite extends Rect {
     public void touchDown(Vector2 touch, int pointer) {
     }
 
+    public void touchDragged(Vector2 touch, int pointer) {
+    }
 
     public void touchUp(Vector2 touch, int pointer) {
 

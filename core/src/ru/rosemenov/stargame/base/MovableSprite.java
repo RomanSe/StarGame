@@ -9,6 +9,7 @@ public abstract class MovableSprite extends Sprite {
     protected Vector2 v = new Vector2();
     protected Rect worldBounds;
 
+
     public MovableSprite(TextureRegion region) {
         super(region);
     }

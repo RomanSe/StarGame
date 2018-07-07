@@ -157,35 +157,40 @@ public class Base2DScreen implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         touch.set(screenX, screenY).mul(screenToWorld);
+        for (Sprite sprite : sprites) {
+            sprite.touchDown(touch, pointer);
+        }
         touchDown(touch, pointer);
         return false;
     }
 
     public void touchDown(Vector2 touch, int pointer) {
-        for (Sprite sprite : sprites) {
-            sprite.touchDown(touch, pointer);
-        }
+
     }
 
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         touch.set(screenX, screenY).mul(screenToWorld);
+        for (Sprite sprite : sprites) {
+            sprite.touchUp(touch, pointer);
+        }
         touchUp(touch, pointer);
         return false;
     }
 
     public void touchUp(Vector2 touch, int pointer) {
-        for (Sprite sprite : sprites) {
-            sprite.touchUp(touch, pointer);
-        }
+
     }
 
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         touch.set(screenX, screenY).mul(screenToWorld);
-        touchDragged(touch, pointer);
+        for (Sprite sprite : sprites) {
+            sprite.touchDragged(touch, pointer);
+        }
+        //touchDragged(touch, pointer);
         return false;
     }
 

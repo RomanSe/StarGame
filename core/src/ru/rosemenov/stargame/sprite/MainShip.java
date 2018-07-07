@@ -4,6 +4,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ru.rosemenov.stargame.base.MovableSprite;
 import ru.rosemenov.stargame.math.Rect;
 
@@ -17,9 +20,15 @@ public class MainShip extends MovableSprite {
 
     private boolean pressedLeft;
     private boolean pressedRight;
+    private static final float DELTA = 0.005f;
+    private boolean pressed;
+    private int pointer;
+    private Map<Integer, Vector2> touchList;
+    private Vector2 touch = new Vector2(0f, 0f);
 
     public MainShip(TextureAtlas atlas) {
-        super(atlas.findRegion("main_ship"), 1, 2,2 );
+        super(atlas.findRegion("main_ship"), 1, 2, 2);
+        touchList = new HashMap<>();
         setHeightProportion(SHIP_HEIGHT);
     }
 
@@ -27,6 +36,20 @@ public class MainShip extends MovableSprite {
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         setBottom(worldBounds.getBottom() + BOTTOM_MARGIN);
+    }
+
+    @Override
+    public void update(float delta) {
+        if (pressed) {
+            if (Math.abs(touch.x - pos.x) < DELTA) {
+                stop();
+            } else if (touch.x < pos.x) {
+                moveLeft();
+            } else {
+                moveRight();
+            }
+        }
+        super.update(delta);
     }
 
     protected void checkAndHandleBounds() {
@@ -70,6 +93,44 @@ public class MainShip extends MovableSprite {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void touchDown(Vector2 touch, int pointer) {
+        touchList.put(pointer, touch);
+        System.out.println(pointer + " " + touchList.size() + " " + pressed);
+        if (touchList.size() == 1) {
+            this.pointer = pointer;
+            this.touch.set(touchList.get(pointer));
+            this.pressed = true;
+        }
+        for (Integer key : touchList.keySet()) {
+            System.out.println(key + "=" + touchList.get(key));
+        }
+    }
+
+    @Override
+    public void touchUp(Vector2 touch, int pointer) {
+        if (touchList.containsKey(pointer)) {
+            touchList.remove(pointer);
+        }
+        if (touchList.isEmpty()) {
+            this.pressed = false;
+            stop();
+        } else if (!touchList.containsKey(this.pointer)) {
+            int nextKey = touchList.keySet().iterator().next();
+            this.pointer = nextKey;
+            this.touch.set(touchList.get(nextKey));
+            this.pressed = true;
+        }
+    }
+
+    @Override
+    public void touchDragged(Vector2 touch, int pointer) {
+        if (this.pointer == pointer) {
+            this.touch.set(touch);
+        }
+        System.out.println(touch + " " + pointer);
     }
 
     private void moveLeft() {
