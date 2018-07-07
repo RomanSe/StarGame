@@ -28,7 +28,7 @@ public class Base2DScreen implements Screen, InputProcessor {
     private Rect screenBounds; // границы экрана в пикселях
     private Rect worldBounds; // границы проекции мировых координат
     private Rect glBounds; // gl-левские координаты
-    protected List<Sprite> sprites;
+    private List<Sprite> sprites;
     protected List<Disposable> resources;
 
     protected Matrix4 worldToGl;
@@ -51,6 +51,10 @@ public class Base2DScreen implements Screen, InputProcessor {
     public Base2DScreen(Game game) {
         this();
         this.game = game;
+    }
+
+    protected void addToWorld(Sprite sprite) {
+        sprites.add(sprite);
     }
 
     @Override
@@ -130,13 +134,17 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        System.out.println("keyDown keycode=" + keycode);
+        for (Sprite sprite : sprites) {
+            sprite.keyDown(keycode);
+        }
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        System.out.println("keyUp keycode=" + keycode);
+        for (Sprite sprite : sprites) {
+            sprite.keyUp(keycode);
+        }
         return false;
     }
 

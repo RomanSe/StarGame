@@ -2,19 +2,12 @@ package ru.rosemenov.stargame.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Disposable;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import ru.rosemenov.stargame.base.ActionListener;
 import ru.rosemenov.stargame.base.Base2DScreen;
-import ru.rosemenov.stargame.base.Sprite;
-import ru.rosemenov.stargame.math.Rect;
 import ru.rosemenov.stargame.math.Rnd;
 import ru.rosemenov.stargame.sprite.Background;
 import ru.rosemenov.stargame.sprite.Button;
@@ -26,7 +19,6 @@ import ru.rosemenov.stargame.sprite.Star;
 
 public class MenuScreen extends Base2DScreen {
 
-    private Background background;
     private Button playButton;
     private Button exitButton;
     private Texture bg;
@@ -42,8 +34,15 @@ public class MenuScreen extends Base2DScreen {
         super.show();
         bg = new Texture("textures/bg.png");
         resources.add(bg);
-        background = new Background(new TextureRegion(bg));
-        sprites.add(background);
+
+        Background background1 = new Background(new TextureRegion(bg));
+        background1.setBottom(0.5f);
+        addToWorld(background1);
+
+        Background background2 = new Background(new TextureRegion(bg));
+        background2.setBottom(-0.5f);
+        addToWorld(background2);
+
 
         atlas = new TextureAtlas("textures/menuAtlas.tpack");
         resources.add(atlas);
@@ -52,16 +51,26 @@ public class MenuScreen extends Base2DScreen {
             float vx = Rnd.nextFloat(-0.005f, 0.005f);
             float vy = Rnd.nextFloat(-0.5f, -0.1f);
             float scale = vy / 0.5f;
-            sprites.add(new Star(starRegion, vx, vy, 0.01f, scale));
+            addToWorld(new Star(starRegion, vx, vy, 0.01f, scale));
         }
         TextureRegion btPlay = atlas.findRegion("btPlay");
         playButton = new Button(btPlay, 0.25f, 0.25f, 0.20f);
-        playButton.addActionListener(src -> game.setScreen(new MainScreen(game)));
-        sprites.add(playButton);
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(Object src) {
+                game.setScreen(new GameScreen(game));
+            }
+        });
+        addToWorld(playButton);
         TextureRegion btExit = atlas.findRegion("btExit");
         exitButton = new Button(btExit, 0.75f, 0.225f, 0.16f);
-        exitButton.addActionListener(src -> Gdx.app.exit());
-        sprites.add(exitButton);
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(Object src) {
+                Gdx.app.exit();
+            }
+        });
+        addToWorld(exitButton);
     }
 
 

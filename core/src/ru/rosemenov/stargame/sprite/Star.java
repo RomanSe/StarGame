@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import ru.rosemenov.stargame.base.MovableSprite;
 import ru.rosemenov.stargame.base.Sprite;
 import ru.rosemenov.stargame.math.Rect;
 import ru.rosemenov.stargame.math.Rnd;
@@ -12,11 +13,7 @@ import ru.rosemenov.stargame.math.Rnd;
  * Created by Alexey on 30.06.2018.
  */
 
-public class Star extends Sprite {
-
-    private Vector2 v = new Vector2();
-    private Rect worldBounds;
-
+public class Star extends MovableSprite {
 
     public Star(TextureRegion region, float vx, float vy, float height, float scale) {
         super(region);
@@ -27,19 +24,13 @@ public class Star extends Sprite {
 
     @Override
     public void resize(Rect worldBounds) {
-        this.worldBounds = worldBounds;
+        super.resize(worldBounds);
         float posX = Rnd.nextFloat(worldBounds.getLeft(), worldBounds.getRight());
         float posY = Rnd.nextFloat(worldBounds.getBottom(), worldBounds.getTop());
         pos.set(posX, posY);
     }
 
-    @Override
-    public void update(float delta) {
-        pos.mulAdd(v, delta);
-        checkAndHandleBounds();
-    }
-
-    private void checkAndHandleBounds() {
+    protected void checkAndHandleBounds() {
         if (getRight() < worldBounds.getLeft()) setLeft(worldBounds.getRight());
         if (getLeft() > worldBounds.getRight()) setRight(worldBounds.getLeft());
         if (getTop() < worldBounds.getBottom()) setBottom(worldBounds.getTop());
