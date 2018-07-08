@@ -1,11 +1,9 @@
 package ru.rosemenov.stargame.sprite;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
+import ru.rosemenov.stargame.base.Base2DScreen;
 import ru.rosemenov.stargame.base.MovableSprite;
-import ru.rosemenov.stargame.base.Sprite;
 import ru.rosemenov.stargame.math.Rect;
 import ru.rosemenov.stargame.math.Rnd;
 
@@ -15,8 +13,8 @@ import ru.rosemenov.stargame.math.Rnd;
 
 public class Star extends MovableSprite {
 
-    public Star(TextureRegion region, float vx, float vy, float height, float scale) {
-        super(region);
+    public Star(Base2DScreen screen, TextureRegion region, float vx, float vy, float height, float scale) {
+        super(screen, region);
         v.set(vx, vy);
         setHeightProportion(height);
         this.scale = scale;
@@ -31,9 +29,9 @@ public class Star extends MovableSprite {
     }
 
     protected void checkAndHandleBounds() {
-        if (getRight() < worldBounds.getLeft()) setLeft(worldBounds.getRight());
-        if (getLeft() > worldBounds.getRight()) setRight(worldBounds.getLeft());
-        if (getTop() < worldBounds.getBottom()) setBottom(worldBounds.getTop());
-        if (getBottom() > worldBounds.getTop()) setTop(worldBounds.getBottom());
+        if (getRight() < world.worldBounds.getLeft()) setLeft(world.worldBounds.getRight());
+        if (getLeft() > world.worldBounds.getRight()) setRight(world.worldBounds.getLeft());
+        if (getTop() < world.worldBounds.getBottom()) setBottom(world.worldBounds.getTop());
+        if (getBottom() > world.worldBounds.getTop()) setTop(world.worldBounds.getBottom());
     }
 }

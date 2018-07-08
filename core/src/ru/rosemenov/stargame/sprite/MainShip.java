@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.HashMap;
 import java.util.Map;
 
+import ru.rosemenov.stargame.base.Base2DScreen;
 import ru.rosemenov.stargame.base.MovableSprite;
 import ru.rosemenov.stargame.math.Rect;
 
@@ -26,8 +27,8 @@ public class MainShip extends MovableSprite {
     private Map<Integer, Vector2> touchList;
     private Vector2 touch = new Vector2(0f, 0f);
 
-    public MainShip(TextureAtlas atlas) {
-        super(atlas.findRegion("main_ship"), 1, 2, 2);
+    public MainShip(Base2DScreen screen, TextureAtlas atlas) {
+        super(screen, atlas.findRegion("main_ship"), 1, 2, 2);
         touchList = new HashMap<>();
         setHeightProportion(SHIP_HEIGHT);
     }
@@ -53,8 +54,8 @@ public class MainShip extends MovableSprite {
     }
 
     protected void checkAndHandleBounds() {
-        if (getRight() < worldBounds.getLeft()) setLeft(worldBounds.getRight());
-        if (getLeft() > worldBounds.getRight()) setRight(worldBounds.getLeft());
+        if (getRight() < world.worldBounds.getLeft()) setLeft(world.worldBounds.getRight());
+        if (getLeft() > world.worldBounds.getRight()) setRight(world.worldBounds.getLeft());
     }
 
     public void keyDown(int keycode) {
@@ -123,6 +124,12 @@ public class MainShip extends MovableSprite {
             this.touch.set(touchList.get(nextKey));
             this.pressed = true;
         }
+    }
+
+    private void updateTouch(int pointer) {
+        this.pointer = pointer;
+        this.touch.set(touchList.get(pointer));
+        this.pressed = true;
     }
 
     @Override

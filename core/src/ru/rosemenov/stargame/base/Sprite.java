@@ -11,27 +11,33 @@ import ru.rosemenov.stargame.utils.Regions;
  * Спрайт
  */
 
-public abstract class Sprite extends Rect {
+public abstract class Sprite extends Rect implements Updatable {
 
     protected float angle;
     protected float scale = 1f;
     protected TextureRegion[] regions;
     protected int frame;
+    protected Base2DScreen world;
 
 
-    public Sprite(TextureRegion region) {
+    public Sprite(Base2DScreen world, TextureRegion region) {
         if (region == null) {
             throw new NullPointerException();
         }
         regions = new TextureRegion[1];
         regions[0] = region;
+        this.world = world;
     }
 
-    public Sprite(TextureRegion region, int rows, int cols, int frames) {
+    public Sprite(Base2DScreen world, TextureRegion region, int rows, int cols, int frames) {
         if (region == null) {
             throw new NullPointerException();
         }
         regions = Regions.split(region, rows, cols, frames);
+        this.world = world;
+    }
+
+    protected Sprite() {
     }
 
     public void draw(SpriteBatch batch) {

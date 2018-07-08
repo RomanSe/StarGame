@@ -23,12 +23,14 @@ import ru.rosemenov.stargame.math.Rect;
 
 public class Base2DScreen implements Screen, InputProcessor {
     protected SpriteBatch batch;
+    public static final float WORLD_HEIGHT = 1f;
 
     protected Game game;
     private Rect screenBounds; // границы экрана в пикселях
-    private Rect worldBounds; // границы проекции мировых координат
+    public Rect worldBounds; // границы проекции мировых координат
     private Rect glBounds; // gl-левские координаты
-    private List<Sprite> sprites;
+    protected List<Sprite> sprites;
+    protected List<Timer> timers;
     protected List<Disposable> resources;
 
     protected Matrix4 worldToGl;
@@ -46,6 +48,7 @@ public class Base2DScreen implements Screen, InputProcessor {
         batch = new SpriteBatch();
         sprites = new ArrayList<>();
         resources = new ArrayList<>();
+        timers = new ArrayList<>();
     }
 
     public Base2DScreen(Game game) {
@@ -70,8 +73,8 @@ public class Base2DScreen implements Screen, InputProcessor {
         screenBounds.setBottom(0);
 
         float aspect = width / (float) height;
-        worldBounds.setHeight(1f);
-        worldBounds.setWidth(1f * aspect);
+        worldBounds.setHeight(WORLD_HEIGHT);
+        worldBounds.setWidth(WORLD_HEIGHT * aspect);
         MatrixUtils.calcTransitionMatrix(worldToGl, worldBounds, glBounds);
         batch.setProjectionMatrix(worldToGl);
         MatrixUtils.calcInputMatrix(screenToWorld, screenBounds, worldBounds);
@@ -125,6 +128,9 @@ public class Base2DScreen implements Screen, InputProcessor {
     }
 
     public void update(float delta) {
+        for (Timer timer : timers) {
+            timer.update(delta);
+        }
         for (Sprite sprite : sprites) {
             sprite.update(delta);
         }
