@@ -54,7 +54,7 @@ public class GameScreen extends Base2DScreen {
     @Override
     public void show() {
         super.show();
-        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.wav"));
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
