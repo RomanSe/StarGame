@@ -11,34 +11,37 @@ import ru.rosemenov.stargame.utils.Regions;
  * Спрайт
  */
 
-public abstract class Sprite extends Rect implements Updatable {
+public class Sprite extends Rect implements Updatable {
 
     protected float angle;
     protected float scale = 1f;
     protected TextureRegion[] regions;
     protected int frame;
-    protected Base2DScreen world;
+    public Rect worldBounds; // границы проекции мировых координат
+    private boolean isDestroyed;
+
+    public Sprite() {
+
+    }
 
 
-    public Sprite(Base2DScreen world, TextureRegion region) {
+    public Sprite(Rect worldBounds, TextureRegion region) {
         if (region == null) {
             throw new NullPointerException();
         }
         regions = new TextureRegion[1];
         regions[0] = region;
-        this.world = world;
+        this.worldBounds = worldBounds;
     }
 
-    public Sprite(Base2DScreen world, TextureRegion region, int rows, int cols, int frames) {
+    public Sprite(Rect worldBounds, TextureRegion region, int rows, int cols, int frames) {
         if (region == null) {
             throw new NullPointerException();
         }
         regions = Regions.split(region, rows, cols, frames);
-        this.world = world;
+        this.worldBounds = worldBounds;
     }
 
-    protected Sprite() {
-    }
 
     public void draw(SpriteBatch batch) {
         batch.draw(
@@ -58,8 +61,9 @@ public abstract class Sprite extends Rect implements Updatable {
     }
 
     public void resize(Rect worldBounds) {
-
     }
+
+    ;
 
 
     public void touchDown(Vector2 touch, int pointer) {
@@ -96,6 +100,18 @@ public abstract class Sprite extends Rect implements Updatable {
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    public void destroy() {
+        this.isDestroyed = true;
+    }
+
+    public void flushDestroy() {
+        this.isDestroyed = false;
+    }
+
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
 
 }

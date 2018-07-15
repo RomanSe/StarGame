@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.rosemenov.stargame.base.ActionListener;
-import ru.rosemenov.stargame.base.Base2DScreen;
 import ru.rosemenov.stargame.base.Sprite;
 import ru.rosemenov.stargame.math.Rect;
 
@@ -25,8 +24,8 @@ public class Button extends Sprite {
 
     private ActionListener actionListener;
 
-    public Button(Base2DScreen world, TextureRegion region, float relativeX, float relativeY, float height) {
-        super(world, region);
+    public Button(Rect worldBounds, TextureRegion region, float relativeX, float relativeY, float height) {
+        super(worldBounds, region);
         setHeightProportion(height);
         this.relativeX = relativeX;
         this.relativeY = relativeY;
@@ -34,9 +33,9 @@ public class Button extends Sprite {
 
     @Override
     public void resize(Rect worldBounds) {
-        super.resize(worldBounds);
         pos.x = worldBounds.getWidth() * (relativeX - 0.5f);
         pos.y = worldBounds.getHeight() * (relativeY - 0.5f);
+        System.out.println(pos);
     }
 
     @Override

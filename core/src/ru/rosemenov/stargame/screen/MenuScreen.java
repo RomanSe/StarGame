@@ -35,13 +35,13 @@ public class MenuScreen extends Base2DScreen {
         bg = new Texture("textures/bg.png");
         resources.add(bg);
 
-        Background background1 = new Background(this, new TextureRegion(bg));
+        Background background1 = new Background(this.worldBounds, new TextureRegion(bg));
         background1.setBottom(0.5f);
-        addToWorld(background1);
+        register(background1);
 
-        Background background2 = new Background(this, new TextureRegion(bg));
+        Background background2 = new Background(this.worldBounds, new TextureRegion(bg));
         background2.setBottom(-0.5f);
-        addToWorld(background2);
+        register(background2);
 
 
         atlas = new TextureAtlas("textures/menuAtlas.tpack");
@@ -51,26 +51,26 @@ public class MenuScreen extends Base2DScreen {
             float vx = Rnd.nextFloat(-0.005f, 0.005f);
             float vy = Rnd.nextFloat(-0.5f, -0.1f);
             float scale = vy / 0.5f;
-            addToWorld(new Star(this, starRegion, vx, vy, 0.01f, scale));
+            register(new Star(this.worldBounds, starRegion, vx, vy, 0.01f, scale));
         }
         TextureRegion btPlay = atlas.findRegion("btPlay");
-        playButton = new Button(this, btPlay, 0.25f, 0.25f, 0.20f);
+        playButton = new Button(this.worldBounds, btPlay, 0.25f, 0.25f, 0.20f);
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(Object src) {
                 game.setScreen(new GameScreen(game));
             }
         });
-        addToWorld(playButton);
+        register(playButton);
         TextureRegion btExit = atlas.findRegion("btExit");
-        exitButton = new Button(this, btExit, 0.75f, 0.225f, 0.16f);
+        exitButton = new Button(this.worldBounds, btExit, 0.75f, 0.225f, 0.16f);
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(Object src) {
                 Gdx.app.exit();
             }
         });
-        addToWorld(exitButton);
+        register(exitButton);
     }
 
 

@@ -56,7 +56,7 @@ public class Base2DScreen implements Screen, InputProcessor {
         this.game = game;
     }
 
-    protected void addToWorld(Sprite sprite) {
+    protected void register(Sprite sprite) {
         sprites.add(sprite);
     }
 
@@ -114,7 +114,16 @@ public class Base2DScreen implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         update(delta);
+        checkCollisions();
+        deleteAllDestroyed();
         draw();
+    }
+
+    public void deleteAllDestroyed() {
+
+    }
+
+    private void checkCollisions() {
     }
 
     public void draw() {
@@ -196,7 +205,7 @@ public class Base2DScreen implements Screen, InputProcessor {
         for (Sprite sprite : sprites) {
             sprite.touchDragged(touch, pointer);
         }
-        //touchDragged(touch, pointer);
+        touchDragged(touch, pointer);
         return false;
     }
 
@@ -214,5 +223,6 @@ public class Base2DScreen implements Screen, InputProcessor {
         System.out.println("scrolled amount=" + amount);
         return false;
     }
+
 
 }

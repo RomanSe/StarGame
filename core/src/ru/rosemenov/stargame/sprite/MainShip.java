@@ -1,21 +1,24 @@
 package ru.rosemenov.stargame.sprite;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import ru.rosemenov.stargame.base.Base2DScreen;
-import ru.rosemenov.stargame.base.MovableSprite;
+import ru.rosemenov.stargame.base.Ship;
 import ru.rosemenov.stargame.math.Rect;
+import ru.rosemenov.stargame.pools.BulletPool;
+import ru.rosemenov.stargame.pools.ExplosionPool;
 
 
-public class MainShip extends MovableSprite {
+public class MainShip extends Ship {
 
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
+    private static final int HEALTH = 10;
 
     private Vector2 v0 = new Vector2(0.5f, 0f);
 
@@ -24,13 +27,24 @@ public class MainShip extends MovableSprite {
     private static final float DELTA = 0.005f;
     private boolean pressed;
     private int pointer;
-    private Map<Integer, Vector2> touchList;
+    private Map<Integer, Vector2> touchList = new HashMap<Integer, Vector2>();
     private Vector2 touch = new Vector2(0f, 0f);
 
-    public MainShip(Base2DScreen screen, TextureAtlas atlas) {
-        super(screen, atlas.findRegion("main_ship"), 1, 2, 2);
-        touchList = new HashMap<>();
+    public MainShip(Rect worldBounds, TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound sound) {
+        super(worldBounds, atlas.findRegion("main_ship"), 1, 2, 2, sound);
         setHeightProportion(SHIP_HEIGHT);
+        this.bulletPool = bulletPool;
+        this.bulletRegion = atlas.findRegion("bulletMainShip");
+        this.bulletHeight = 0.01f;
+        this.bulletV.set(0, 0.5f);
+        this.bulletDamage = 1;
+        this.reloadInterval = 0.2f;
+        this.explosionPool = explosionPool;
+        this.hp = HEALTH;
+    }
+
+    public void reset() {
+        this.hp = HEALTH;
     }
 
     @Override
@@ -50,12 +64,17 @@ public class MainShip extends MovableSprite {
                 moveRight();
             }
         }
+        reloadTimer += delta;
+        if (reloadTimer >= reloadInterval) {
+            reloadTimer = 0f;
+            shoot();
+        }
         super.update(delta);
     }
 
     protected void checkAndHandleBounds() {
-        if (getRight() < world.worldBounds.getLeft()) setLeft(world.worldBounds.getRight());
-        if (getLeft() > world.worldBounds.getRight()) setRight(world.worldBounds.getLeft());
+        if (getRight() < worldBounds.getLeft()) setLeft(worldBounds.getRight());
+        if (getLeft() > worldBounds.getRight()) setRight(worldBounds.getLeft());
     }
 
     public void keyDown(int keycode) {
@@ -150,5 +169,12 @@ public class MainShip extends MovableSprite {
 
     private void stop() {
         v.setZero();
+    }
+
+    public boolean isBulletCollision(Rect bullet) {
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > pos.y
+                || bullet.getTop() < getBottom());
     }
 }
