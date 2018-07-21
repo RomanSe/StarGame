@@ -4,7 +4,7 @@ package ru.rosemenov.stargame.base;
  * Таймер
  */
 
-public class Timer implements Updatable {
+public class Timer {
     private float generateInterval;
     private volatile float generateTimer;
     private ActionListener actionListener;
@@ -14,7 +14,6 @@ public class Timer implements Updatable {
         this.generateInterval = generateInterval;
     }
 
-    @Override
     synchronized public void update(float delta) {
         generateTimer += delta;
         if (generateInterval <= generateTimer) {

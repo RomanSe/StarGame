@@ -1,5 +1,6 @@
 package ru.rosemenov.stargame.sprite;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -24,8 +25,29 @@ public class Background extends MovingSprite {
     }
 
     @Override
+    public void draw(SpriteBatch batch) {
+        batch.draw(
+                regions[frame], // текущий регион
+                getLeft(), getBottom(), // точка отрисовки
+                halfWidth, halfHeight, // точка вращения
+                getWidth(), getHeight(), // ширина и высота
+                scale, scale, // масштаб по оси x и y
+                angle // угол вращения
+        );
+        batch.draw(
+                regions[frame], // текущий регион
+                getLeft(), getTop(), // точка отрисовки
+                halfWidth, halfHeight, // точка вращения
+                getWidth(), getHeight(), // ширина и высота
+                scale, scale, // масштаб по оси x и y
+                angle // угол вращения
+        );
+
+    }
+
+    @Override
     protected void checkAndHandleBounds() {
-        if (getTop() <= worldBounds.getBottom()) setBottom(worldBounds.getTop());
+        if (getTop() <= worldBounds.getBottom()) setBottom(worldBounds.getBottom());
     }
 
 

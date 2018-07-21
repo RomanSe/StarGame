@@ -11,7 +11,7 @@ import ru.rosemenov.stargame.utils.Regions;
  * Спрайт
  */
 
-public class Sprite extends Rect implements Updatable {
+public class Sprite extends Rect {
 
     protected float angle;
     protected float scale = 1f;

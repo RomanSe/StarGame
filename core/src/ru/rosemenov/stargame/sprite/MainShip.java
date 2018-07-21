@@ -18,7 +18,7 @@ public class MainShip extends Ship {
 
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
-    private static final int HEALTH = 10;
+    private static final int MAX_HEALTH = 50;
 
     private Vector2 v0 = new Vector2(0.5f, 0f);
 
@@ -40,11 +40,12 @@ public class MainShip extends Ship {
         this.bulletDamage = 1;
         this.reloadInterval = 0.2f;
         this.explosionPool = explosionPool;
-        this.hp = HEALTH;
+        this.hp = MAX_HEALTH;
     }
 
     public void reset() {
-        this.hp = HEALTH;
+        flushDestroy();
+        this.hp = MAX_HEALTH;
     }
 
     @Override
@@ -176,5 +177,9 @@ public class MainShip extends Ship {
                 || bullet.getLeft() > getRight()
                 || bullet.getBottom() > pos.y
                 || bullet.getTop() < getBottom());
+    }
+
+    public float getDemage() {
+        return (hp + 0.0f) / MAX_HEALTH;
     }
 }
