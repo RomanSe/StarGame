@@ -53,7 +53,6 @@ public class Enemy extends Ship {
             case FIGHT:
                 if (getBottom() < worldBounds.getBottom()) {
                     mainShip.damage(bulletDamage);
-                    boom();
                     destroy();
                 }
                 break;

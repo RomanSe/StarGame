@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -23,6 +24,8 @@ import ru.rosemenov.stargame.math.Rect;
 
 public class Base2DScreen implements Screen, InputProcessor {
     protected SpriteBatch batch;
+    protected ShapeRenderer shapeRenderer;
+
     public static final float WORLD_HEIGHT = 1f;
 
     protected Game game;
@@ -46,6 +49,8 @@ public class Base2DScreen implements Screen, InputProcessor {
         this.screenToWorld = new Matrix3();
         Gdx.input.setInputProcessor(this);
         batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setAutoShapeType(true);
         sprites = new ArrayList<>();
         resources = new ArrayList<>();
         timers = new ArrayList<>();
@@ -77,6 +82,7 @@ public class Base2DScreen implements Screen, InputProcessor {
         worldBounds.setWidth(WORLD_HEIGHT * aspect);
         MatrixUtils.calcTransitionMatrix(worldToGl, worldBounds, glBounds);
         batch.setProjectionMatrix(worldToGl);
+        shapeRenderer.setProjectionMatrix(worldToGl);
         MatrixUtils.calcInputMatrix(screenToWorld, screenBounds, worldBounds);
         resize(worldBounds);
     }

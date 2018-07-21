@@ -60,7 +60,7 @@ public abstract class Ship extends MovingSprite {
         shootSound.play();
     }
 
-    public void boom() {
+    private void boom() {
         Explosion explosion = explosionPool.obtain();
         explosion.set(getHeight() * (float) 1.5, pos);
     }
@@ -70,9 +70,15 @@ public abstract class Ship extends MovingSprite {
         damageAnimateTimer = 0f;
         hp -= damage;
         if (hp <= 0) {
-            boom();
+            hp = 0;
             destroy();
         }
+    }
+
+    @Override
+    public void destroy() {
+        boom();
+        super.destroy();
     }
 
     public int getHp() {

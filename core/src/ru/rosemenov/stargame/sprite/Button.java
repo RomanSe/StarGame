@@ -35,7 +35,6 @@ public class Button extends Sprite {
     public void resize(Rect worldBounds) {
         pos.x = worldBounds.getWidth() * (relativeX - 0.5f);
         pos.y = worldBounds.getHeight() * (relativeY - 0.5f);
-        System.out.println(pos);
     }
 
     @Override
